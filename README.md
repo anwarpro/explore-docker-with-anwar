@@ -105,7 +105,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000
-CMD [ "node", "server.js" ]
+CMD [ "node", "index.js" ]
 ```
 
 Time to explore .dockerignore. This allows you to exclude files from the context like a .gitignore file will enable you
