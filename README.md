@@ -87,25 +87,15 @@ stateDiagram-v2
 Create a simple Dockerfile in the app root directory as Dockerfile (case sensitive), with no extension.
 
 ```yaml
-FROM node:16.16.0
+FROM node:14.17.0-alpine
 
-  # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-  # Install app dependencies
-  # A wildcard is used to ensure both package.json AND package-lock.json are copied
-  # where available (npm@5+)
-COPY package*.json ./
+ADD package*.json ./
 
 RUN npm install
-  # If you are building your code for production
-  # RUN npm ci --only=production
-
-  # Bundle app source
-COPY . .
-
-EXPOSE 3000
-CMD [ "node", "index.js" ]
+COPY index.js ./
+CMD [ "node", "index.js"]
 ```
 
 Time to explore .dockerignore. This allows you to exclude files from the context like a .gitignore file will enable you
@@ -174,4 +164,5 @@ docker container kill :container_id
 # What is Docker-Machine ?
 
 > Docker Machine let us create Docker hosts on our computers, on cloud providers, and inside data centers. It creates
-> servers, installs Docker on them, then configures the Docker client to talk to them. — @Docker# explore-docker-with-anwar
+> servers, installs Docker on them, then configures the Docker client to talk to them. — @Docker#
+> explore-docker-with-anwar
