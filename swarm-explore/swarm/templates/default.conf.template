@@ -1,0 +1,11 @@
+upstream loadbalance {
+    server ${SERVER_IP}:${SERVER_PORT};
+}
+
+server {
+    listen 80;
+    server_name _;
+    location / {
+           proxy_pass http://loadbalance;
+    }
+}
