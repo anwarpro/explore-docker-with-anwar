@@ -4,7 +4,7 @@ services:
   nodeapp:
     image: programminghero/swarm-explore
     ports:
-      - 5000:5000
+      - 3000:3000
     deploy:
       replicas: 15
       restart_policy:
@@ -21,8 +21,8 @@ services:
     ports:
       - 80:80
     environment:
-      - SERVER_IP=192.168.0.100
-      - SERVER_PORT=5000
+      - SERVER_IP=192.168.0.101
+      - SERVER_PORT=3000
     depends_on:
       - nodeapp
     deploy:

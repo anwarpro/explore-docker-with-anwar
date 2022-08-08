@@ -7,18 +7,16 @@
 7. [~~Docker Containers~~](#running-a-docker-image)
 8. [~~Tag/Versioning~~](#tagversioning)
 9. [~~Docker Cheat Sheet~~](#docker-some-other-commands)
-10. Docker Compose
-11. What is Docker Swarm ?
-12. What is the difference with Kubernetes
-13. Create and init the docker swarm cluster
-14. Publish our docker image to docker hub repository
-15. Docker Swarm visualizer
-16. Scaling & Load Balancing
-17. Monitor the docker swarm cluster
-18. ~~What is Docker-Machine ?~~
-19. ~~Auto scaling~~
-20. ~~Dockerize the Node application with CI/CD~~
-21. ~~Testing our setup~~
+10. Dockerize the Node application
+11. Docker Compose
+12. What is Docker Swarm ?
+13. What is the difference with Kubernetes
+14. Create and init the docker swarm cluster
+15. Publish our docker image to docker hub repository
+16. Docker Swarm visualizer
+17. Scaling & Load Balancing
+18. Monitor the docker swarm cluster
+19. [Auto scaling](https://soumyadeeppaul.medium.com/auto-scaling-services-on-swarm-cd1f6fafd7ac)
 
 # What is Docker ?
 
@@ -257,8 +255,6 @@ Ok so now let’s see what we can accomplish creating a Docker Swarm Cluster:
 
 <img src="images/K8s_vs._Docker_Swarm.png">
 
-# Create and init the docker swarm cluster
-
 # Publish our docker image to docker hub repository
 
 ```shell
@@ -266,13 +262,30 @@ docker login
 docker image push programminghero/image-name
 ```
 
-# Scaling & Load Balancing
+# Create and init the docker swarm cluster
+
+```shell
+docker swarm init
+```
+
+For deploy our stack we need to run
 
 ```shell
 docker stack deploy -c docker-compose.yml swarmnodeapp
+```
+
+service and node status check:
+
+```shell
 docker service ls
 docker node ls
+```
 
+# Scaling & Load Balancing
+
+for scaling
+
+```shell
 docker service scale swarmnodeapp_nodeapp=50
 ```
 
