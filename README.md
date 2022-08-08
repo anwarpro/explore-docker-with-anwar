@@ -1,23 +1,24 @@
-1. What is Docker ?
-2. What is the difference with virtual machines ?
-3. Install and Run Hello world
-4. Play with docker
-5. Dockerfile
-6. Docker Images
-7. Docker Containers
-8. Tag/Versioning
-9. Docker Cheat Sheet
-10. ~~Docker Compose~~
-11. ~~Dockerize the Node application with CI/CD~~
-12. ~~What is Docker-Machine ?~~
-13. ~~What is Docker Swarm ?~~
-14. ~~What is the difference with Kubernetes~~
-15. ~~Create and init the docker swarm cluster~~
-16. ~~Publish our docker image to docker hub repository~~
-17. ~~Docker Swarm visualizer~~
-18. ~~Scaling & Load Balancing~~
-19. ~~Monitor the docker swarm cluster~~
-20. ~~Testing our setup~~
+1. [~~What is Docker ?~~](#what-is-docker-)
+2. [~~What is the difference with virtual machines ?~~](#what-is-the-difference-with-virtual-machines-)
+3. [~~Install and Run Hello world~~](#install-and-run-hello-world)
+4. [~~Play with docker~~](#play-with-docker)
+5. [~~Dockerfile~~](#creating-a-dockerfile)
+6. [~~Docker Images~~](#building-image)
+7. [~~Docker Containers~~](#running-a-docker-image)
+8. [~~Tag/Versioning~~](#tagversioning)
+9. [~~Docker Cheat Sheet~~](#docker-some-other-commands)
+10. Docker Compose
+11. What is Docker Swarm ?
+12. What is the difference with Kubernetes
+13. Create and init the docker swarm cluster
+14. Publish our docker image to docker hub repository
+15. Docker Swarm visualizer
+16. Scaling & Load Balancing
+17. Monitor the docker swarm cluster
+18. ~~What is Docker-Machine ?~~
+19. ~~Auto scaling~~
+20. ~~Dockerize the Node application with CI/CD~~
+21. ~~Testing our setup~~
 
 # What is Docker ?
 
@@ -161,8 +162,128 @@ docker container kill :container_id
 
 # Build v2 image of our Node Js app
 
-# What is Docker-Machine ?
+# Docker Compose
 
-> Docker Machine let us create Docker hosts on our computers, on cloud providers, and inside data centers. It creates
-> servers, installs Docker on them, then configures the Docker client to talk to them. — @Docker#
-> explore-docker-with-anwar
+Docker Compose is a tool for managing multi-container applications. Docker Compose is bundled with Docker Desktop for
+Windows and Mac. On Linux, it has to be installed separately, check the installation page for details
+
+Docker Compose can:
+
+- Start and stop multiple containers in sequence.
+- Connect containers using a virtual network.
+- Handle persistence of data using Docker Volumes.
+- Set environment variables.
+- Build or download container images as required.
+
+Docker Compose uses a YAML definition file to describe the whole application.
+
+Create a file called docker-compose.yml:
+
+```yaml
+version: "3.9"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - server-db:/var/lib/postgresql/data
+  server:
+    build:
+      context: .
+    environment:
+      DB_SCHEMA: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+
+volumes:
+  server-db:
+```
+
+Start Docker Compose and run the tests. Compose will build the image as needed and map the data volumes:
+
+```shell
+docker compose run addressbook npm test
+```
+
+We can start the app and use curl to test the endpoint:
+
+```shell
+docker compose up -d
+curl -w "\n" \
+       -X PUT \
+       -d "firstName=Bobbie&lastName=Draper" \
+       localhost:3000/persons
+```
+
+Let's check our newly created guy:
+
+```shell
+curl -w "\n" localhost:3000/persons/all
+```
+
+Perfect, now that everything works, push all the new code to GitHub:
+
+# What is Docker Swarm ?
+
+Docker Swarm is native clustering for Docker. It turns a pool of Docker hosts into a single, virtual host using an API
+proxy system.
+
+<strong>Lets understand what a CLUSTER mean first.</strong>
+> A cluster is a set of tightly coupled computers that function like a single machine. The individual machines, called
+> nodes, communicate with each other over a very fast network, and they’re physically very close together, perhaps in
+> the
+> same cabinet. Usually they have identical or nearly identical hardware and software. All the nodes can handle the same
+> types of request. Sometimes one node takes requests and dispatches them to the others. — <strong>Phil
+> Dougherty</strong>
+
+Ok so now let’s see what we can accomplish creating a Docker Swarm Cluster:
+
+- Multi-host networking
+- Scalling
+- Load Balancing
+- Security by default
+- Cluster management
+
+# What is the difference with Kubernetes
+
+<img src="images/K8s_vs._Docker_Swarm.png">
+
+# Create and init the docker swarm cluster
+
+# Publish our docker image to docker hub repository
+
+```shell
+docker login
+docker image push programminghero/image-name
+```
+
+# Scaling & Load Balancing
+
+```shell
+docker stack deploy -c docker-compose.yml swarmnodeapp
+docker service ls
+docker node ls
+
+docker service scale swarmnodeapp_nodeapp=50
+```
+
+# Docker Swarm visualizer
+
+```shell
+docker container run -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock -d dockersamples/visualizer
+```
+
+# Monitor the docker swarm cluster
+
+```shell
+docker run --name rancher --restart=unless-stopped -p 9000:8080 -d rancher/server
+```
